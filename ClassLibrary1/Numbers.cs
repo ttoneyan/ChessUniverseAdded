@@ -1,13 +1,3 @@
 ﻿namespace Chessuniverse.Library;
 
-public enum Numbers
-{
-    one=0, 
-    two,
-    three,
-    four,
-    five,
-    six,
-    seven,
-    eight,
-}
+public enum Numbers { One = 0, Two = 1, Three = 2, Four = 3, Five = 4, Six = 5, Seven = 6, Eight = 7 }

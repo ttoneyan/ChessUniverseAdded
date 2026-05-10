@@ -6,36 +6,40 @@ public class Bishop(PieceColor color) : Piece(color, PieceType.Bishop), IMovable
     {
         return color == PieceColor.White ? '♗' : '♝';
     }
-    public bool Move(Coordinate start, Coordinate end, ChessBoard board)
-    {
-        //Basic Bishop Logic
-        if (Math.Abs(start.Letter - end.Letter) != Math.Abs(start.Number - end.Number)) return false;
-        //Determine Direction (1 or -1)
-        int stepOfLetter = end.Letter > start.Letter ? 1 : -1;
-        int stepOfNumber = end.Number > start.Number ? 1 : -1;
-        // Check for interrupting figures
-        int currentLetter = (int)start.Letter + stepOfLetter;
-        int currentNumber = (int)start.Number + stepOfNumber;
-        //until we reach the square just before the 'end' coordinate
-        while (currentLetter != (int)end.Letter && currentNumber != (int)end.Number)
+        public bool Move(Coordinate start, Coordinate end, ChessBoard board)
         {
-            if (board[currentNumber,currentLetter] != null)
+            int sCol = (int)start.Letter;
+            int sRow = (int)start.Number;
+            int eCol = (int)end.Letter;
+            int eRow = (int)end.Number;
+
+            // 1. Diagonal Check: Absolute difference of rows must equal absolute difference of columns
+            if (Math.Abs(sCol - eCol) != Math.Abs(sRow - eRow)) return false;
+
+            // 2. Prevent moving to the same square
+            if (sCol == eCol && sRow == eRow) return false;
+
+            // 3. Directions
+            int stepCol = eCol > sCol ? 1 : -1;
+            int stepRow = eRow > sRow ? 1 : -1;
+
+            // 4. Path Check: Start checking from the square AFTER the start
+            int currCol = sCol + stepCol;
+            int currRow = sRow + stepRow;
+
+            while (currCol != eCol)
             {
-                return false; // Path is blocked
+                if (board[currRow, currCol] != null) return false; // Blocked
+
+                currCol += stepCol;
+                currRow += stepRow;
             }
-            currentLetter += stepOfLetter;
-            currentNumber += stepOfNumber;
+
+            // 5. Destination Check: Cannot take your own piece
+            var target = board[eRow, eCol];
+            if (target != null && target.Color == this.Color) return false;
+
+            return true;
         }
-        //Check the end square
-        if (board[(int)end.Number,(int)end.Letter] != null && board[(int)end.Number, (int)end.Letter].Color == this.Color)
-        {
-            return false; // Cannot capture your own piece
-        }
-        //Update the board and Move the figure
-        board[(int)end.Number,(int)end.Letter] = this;
-        board[(int)start.Number,(int)start.Letter] = null;
-   
-        return true;
-    }
 }
         

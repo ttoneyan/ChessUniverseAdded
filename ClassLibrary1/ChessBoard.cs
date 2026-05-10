@@ -4,12 +4,20 @@ namespace Chessuniverse.Library;
 
 public class ChessBoard
 {
-    private Piece[,] _squares=new Piece[8,8];
+    private Piece[,] _squares = new Piece[8, 8];
 
     public Piece this[int row, int col]
     {
-        get=> _squares[row, col]; 
-        set=>_squares [row, col]=value;
+        get
+        {
+            if (row < 0 || row > 7 || col < 0 || col > 7) return null;
+            return _squares[row, col];
+        }
+        set
+        {
+            if (row >= 0 && row <= 7 && col >= 0 && col <= 7)
+                _squares[row, col] = value;
+        }
     }
 
     public Piece this[string coordinate]
@@ -17,14 +25,13 @@ public class ChessBoard
         get
         {
             if (coordinate.Length != 2) return null;
-
-            int col = coordinate[0] - 'A';
-            int row = '8'-coordinate[1];
+            int col = char.ToUpper(coordinate[0]) - 'A'; 
+            int row = '8' - coordinate[1];
             if (row > 7 || row < 0 || col > 7 || col < 0) return null;
             return _squares[row, col];
         }
     }
-     public void SetStartPosition()
+    public void SetStartPosition()
     {
         Array.Clear(_squares, 0, _squares.Length);
         _squares[0, 0] = new Rook(PieceColor.Black);
